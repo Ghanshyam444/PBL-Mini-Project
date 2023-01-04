@@ -1,8 +1,11 @@
+//Building Game Interface 
+//Games Like Tic Tac Toe and Sudoku
 #include <iostream>
 #include<list>
 #include<cstdlib>
 #include<string>
 #include <ctime>
+#include<fstream>
 #define N 9
 using namespace std;
 
@@ -75,11 +78,20 @@ private:
     }
  
     void playerInput(Player &player){
-        int pos;
+        int pos;string s;
         cout << endl;
         cout << "\t" << player.getName() <<" Turn: ";
         cout <<"\t Enter the position " << endl;
         cin >> pos;
+        try{
+             if(pos>9)
+             throw s;
+         }
+         catch(...)
+         {
+             cout<<"Please enter valid number(0 to 9)"<<endl;
+             cin>>pos;
+         }
         pos -=1;
         if(emptyIndex[pos] == 1){
             cout << "-----Position not empty-------"<< endl;
@@ -91,6 +103,7 @@ private:
                }
     }
     void checkWin(Player &p1,Player &p2){
+        ofstream fout;
         int i,j,k;
         bool flag = false;
         char first_symbol;
@@ -115,17 +128,25 @@ private:
                     cout << "\t Player I WON"<< endl;
                     cout << "-----------------------"<< endl;
                     p1.won();
+                    fout.open("Tic_Tac_Toe",ios::app);
+                    fout<<"Player I won"<<endl;
+                    fout.close();
                 } else {
                     p2.won();
                     if(againstComputer){
                         cout << "-----------------------"<< endl;
                         cout << "\t Computer WON"<< endl;
                         cout << "-----------------------"<< endl;
+                        fout.open("Tic_Tac_Toe",ios::app);
+                        fout<<"COMPUTER win"<<endl;
+                        fout.close();
                     } else {
                         cout << "-----------------------"<< endl;
                         cout << "\t Player II WON"<< endl;
                         cout << "-----------------------"<< endl;
- 
+                        fout.open("Tic_Tac_Toe",ios::app);
+                        fout<<"Player II win"<<endl;
+                        fout.close();
                     }
                 }
                 displayScore(p1,p2);
@@ -224,6 +245,7 @@ public:
 void tictactoe()
 {
   int ch;
+  ofstream fout;
  
     while(1){
         cout<< "      ----------MENU----------" << endl;
@@ -269,12 +291,21 @@ class SudokuG{
      };
 void readGrid()
 {
- cout<<"Enter the elements row by row"<<endl;
+ cout<<"Enter the elements row by row"<<endl;string s;
  for(int i=0;i<9;i++)
    {
      for(int j=0;j<9;j++)
        {
          cin>>grid[i][j];
+         try{
+             if(grid[i][j]>9)
+             throw s;
+         }
+         catch(...)
+         {
+             cout<<"Please enter valid number(0 to 9)"<<endl;
+             cin>>grid[i][j];
+         }
        }
    }
 }
@@ -303,11 +334,14 @@ bool isPresentInBox(int boxStartRow, int boxStartCol, int num){
    return false;
 }
 void sudokuGrid(){ //print the sudoku grid after solve
+ ofstream fout;
+ fout.open("Sudoku",ios::app);
    for (int row = 0; row < N; row++){
       for (int col = 0; col < N; col++){
          if(col == 3 || col == 6)
             cout << " | ";
          cout << grid[row][col] <<" ";
+         fout<<grid[row][col]<<" ";
       }
       if(row == 2 || row == 5){
          cout << endl;
@@ -315,7 +349,9 @@ void sudokuGrid(){ //print the sudoku grid after solve
             cout << "---";
       }
       cout << endl;
+      fout<<endl;
    }
+   fout.close();
 }
 bool findEmptyPlace(int &row, int &col){ //get empty location and update row and column
    for (row = 0; row < N; row++)
